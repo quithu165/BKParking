@@ -1,63 +1,132 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import {View} from 'react-native'
-import LoginComponent from './view/LoginComponent'
-import SignupComponent from './view/SignupComponent'
-import HomeComponent from './view/HomeComponent'
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {View} from 'react-native';
+import LoginComponent from './src/components/LoginComponent';
+import SignupUserComponent from './src/components/SignupUserComponent';
+import SignupInfoComponent from './src/components/SignupInfoComponent';
+import HomeComponent from './src/components/HomeComponent';
+import UserProfileComponent from './src/components/UserProfileComponent';
+import AddPlateComponent from './src/components/AddPlateComponent';
+import MapContainer from './src/components/MapTesting';
+import MapTesting from './src/components/MapTesting';
 const Stack = createStackNavigator();
 
-class LoginScreen extends React.Component{
+class LoginScreen extends React.Component {
+  render() {
+    return <LoginComponent navigation={this.props.navigation} />;
+  }
+}
+
+class UserProfileScreen extends React.Component {
   render() {
     return (
-       <LoginComponent navigation={this.props.navigation}/>
+      <UserProfileComponent
+        route={this.props.route}
+        navigation={this.props.navigation}
+      />
+    );
+  }
+}
+class AddPlateScreen extends React.Component {
+  render() {
+    return (
+      <AddPlateComponent
+        route={this.props.route}
+        navigation={this.props.navigation}
+      />
+    );
+  }
+}
+class SignupUserScreen extends React.Component {
+  render() {
+    return <SignupUserComponent navigation={this.props.navigation} />;
+  }
+}
+
+class SignupInfoScreen extends React.Component {
+  render() {
+    return (
+      <SignupInfoComponent
+        route={this.props.route}
+        navigation={this.props.navigation}
+      />
     );
   }
 }
 
-class SignupScreen extends React.Component{
+class HomeScreen extends React.Component {
   render() {
     return (
-       <SignupComponent navigation={this.props.navigation}/>
+      <HomeComponent
+        route={this.props.route}
+        navigation={this.props.navigation}
+      />
     );
   }
 }
-
-class HomeScreen extends React.Component{
+class MapScreen extends React.Component {
   render() {
     return (
-       <HomeComponent navigation={this.props.navigation}/>
+      <MapTesting route={this.props.route} navigation={this.props.navigation} />
     );
   }
 }
 export default class App extends React.Component {
-  render(){
+  render() {
     return (
       <NavigationContainer>
-      <Stack.Navigator initialRouteName="login">
-        <Stack.Screen 
-          name="login" 
-          component={LoginScreen}
-          options={{
-            headerShown: false
-          }}
-        />
-        <Stack.Screen 
-          name="signup" 
-          component={SignupScreen} 
-          options={{
-            headerShown: false
-          }}
-        />
-        <Stack.Screen 
-          name="home" 
-          component={HomeScreen} 
-          options={{
-            headerShown: false
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+        <Stack.Navigator initialRouteName="login">
+          <Stack.Screen
+            name="login"
+            component={LoginScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="signupuser"
+            component={SignupUserScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="addplate"
+            component={AddPlateScreen}
+            options={
+              {
+                // headerShown: false
+              }
+            }
+          />
+          <Stack.Screen
+            name="signupinfo"
+            component={SignupInfoScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="home"
+            component={HomeScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="userprofile"
+            component={UserProfileScreen}
+            options={{}}
+          />
+
+          <Stack.Screen 
+            name="map" 
+            component={MapScreen} 
+            options={{}} 
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     );
   }
 }
