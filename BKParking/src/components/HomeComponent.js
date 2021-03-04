@@ -10,7 +10,9 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import styles from '../styles/HomeStyles'
+import WebView from 'react-native-webview';
+import map from '../common/map';
+import styles from '../styles/HomeStyles';
 import ModalDropdown from 'react-native-modal-dropdown';
 class HomeComponent extends Component {
   componentDidMount() {
@@ -68,7 +70,7 @@ class HomeComponent extends Component {
 
         break;
       case 3:
-        this.props.navigation.navigate('map')
+        this.props.navigation.navigate('map');
         break;
       default:
         console.log(userOption);
@@ -78,45 +80,55 @@ class HomeComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
-        
-        <View style={styles.body}>
-       
+        <WebView
+          ref={'Map_Ref'}
+          source={{html: map}}
+          geolocationEnabled={true}
+        />
+        <View style={styles.overlay}>
+          <View style={styles.body}>
+            <View style={styles.header}>
+              <View style={styles.userOptions}>
+                <ModalDropdown
+                  style={styles.dropdownIcon}
+                  dropdownStyle={styles.dropdownList}
+                  // renderSeparator={() => <View /> }
+                  onSelect={(userOption) =>
+                    this.handleDropdownSelect(userOption)
+                  }
+                  options={[
+                    'User Infomation',
+                    'Add license plate',
+                    'Quit',
+                    'Map Testing',
+                  ]}
+                  renderRightComponent={() => (
+                    <Image
+                      style={styles.usericon}
+                      source={require('../../assets/nav-menu.png')}></Image>
+                  )}></ModalDropdown>
+              </View>
+              <View style={styles.searchBox}>
+                <View style={styles.searchArea}>
+                  <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search..."
+                    placeholderTextColor="#0D0D0F"
+                    // onChangeText={this.handleLName}
+                  />
+                  <TouchableOpacity
+                    style={styles.searchIconArea}
+                    //   onPress={() => {
 
+                    //   }}
+                  >
+                    <Image
+                      style={styles.searchIcon}
+                      source={require('../../assets/search-icon.png')}></Image>
+                  </TouchableOpacity>
 
-          <View style={styles.header}>
-            <View style={styles.userOptions}>
-              <ModalDropdown
-                style={styles.dropdownIcon}
-                dropdownStyle={styles.dropdownList}
-                // renderSeparator={() => <View /> }
-                onSelect={(userOption) => this.handleDropdownSelect(userOption)}
-                options={['User Infomation', 'Add license plate', 'Quit', 'Map Testing']}
-                renderRightComponent={() => (
-                  <Image
-                    style={styles.usericon}
-                    source={require('../../assets/nav-menu.png')}></Image>
-                )}></ModalDropdown>
-            </View>
-            <View style={styles.searchBox}>
-              <View style={styles.searchArea}>
-                <TextInput
-                  style={styles.searchInput}
-                  placeholder="Search..."
-                  placeholderTextColor="#0D0D0F"
-                  // onChangeText={this.handleLName}
-                />
-                <TouchableOpacity
-                  style={styles.searchIconArea}
-                  //   onPress={() => {
-
-                  //   }}
-                >
-                  <Image
-                    style={styles.searchIcon}
-                    source={require('../../assets/search-icon.png')}></Image>
-                </TouchableOpacity>
-
-                <View style={styles.searchTemp}></View>
+                  <View style={styles.searchTemp}></View>
+                </View>
               </View>
             </View>
           </View>

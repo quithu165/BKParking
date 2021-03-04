@@ -31,7 +31,7 @@ class LoginComponent extends Component {
   };
   login = (name, pass) => {
     //alert('email: ' + email + ' password: ' + pass)
-    // this.props.navigation.navigate('home');
+    // this.props.navigation.navigate('map');
     if (name == '') Alert.alert('Username can be empty');
     else if (pass == '') Alert.alert('Password can be empty');
     else {
