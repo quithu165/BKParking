@@ -10,6 +10,12 @@ target 'BKParking' do
 
   pod 'react-native-webview', :path => '../node_modules/react-native-webview'
 
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
+  pod 'react-native-image-base64', :path => '../node_modules/react-native-image-base64'
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'BKParkingTests' do
     inherit! :complete
     # Pods for testing

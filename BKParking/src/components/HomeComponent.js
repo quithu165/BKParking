@@ -14,9 +14,16 @@ import WebView from 'react-native-webview';
 import map from '../common/map';
 import styles from '../styles/HomeStyles';
 import ModalDropdown from 'react-native-modal-dropdown';
+import {ListItem, Avatar } from 'react-native-paper';
+import {Overlay} from 'react-native-elements';
+const axios = require('axios');
 class HomeComponent extends Component {
+  state = {
+    showListParkingLot: false,
+  };
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    // markParkingLots(10.77057, 106.672547, 4);
   }
 
   componentWillUnmount() {
@@ -76,12 +83,83 @@ class HomeComponent extends Component {
         console.log(userOption);
     }
   }
-
+  markParkingLots(lat, long, type) {
+    this.Map_Ref.injectJavaScript(`
+      markLocation(${lat}, ${long}, ${type})
+    `);
+  }
+  converStatus2Level(status) {
+    if (status >= 0.5) return 'Empty';
+    else if (status > 0) return 'Normal';
+    return 'Full';
+  }
+  markParkingBaseLoc(parkingArray, size) {
+    for (var i = 0; i < size; i++) {
+      switch (this.converStatus2Level(parkingArray[i].status)) {
+        case 'Full':
+          this.markParkingLots(
+            parkingArray[i].coordinate.longitude,
+            parkingArray[i].coordinate.latitude,
+            1,
+          );
+          break;
+        case 'Normal':
+          this.markParkingLots(
+            parkingArray[i].coordinate.longitude,
+            parkingArray[i].coordinate.latitude,
+            2,
+          );
+          break;
+        case 'Empty':
+          this.markParkingLots(
+            parkingArray[i].coordinate.longitude,
+            parkingArray[i].coordinate.latitude,
+            3,
+          );
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  getCurLocation() {
+    //get geolocation
+    this.markParkingLots(10.77057, 106.672547, 4);
+    this.Map_Ref.injectJavaScript(`
+      mymap.setView([10.77057, 106.672547], 15);
+    `);
+    axios
+      .post('http://gogito.duckdns.org:3002/cal_coor', {
+        current: {
+          latitude: '106.672547',
+          longitude: '10.77057',
+        },
+        radius: '0.7',
+      })
+      .then(
+        (response) => {
+          var sizeOfResponse = JSON.stringify(response.data.resultArray.length);
+          // console.log(JSON.stringify(response.data.resultArray));
+          this.markParkingBaseLoc(response.data.resultArray, sizeOfResponse);
+        },
+        (error) => {
+          console.log('error');
+          Alert.alert('Wrong username or password!');
+        },
+      );
+  }
+  toggleShowParkingLot() {
+    this.setState({showListParkingLot: !this.state.showListParkingLot});
+  }
+  //RENDER=======================================================================
   render() {
     return (
       <View style={styles.container}>
         <WebView
-          ref={'Map_Ref'}
+          originWhitelist={['*']}
+          javaScriptEnabled={true}
+          allowFileAccess={true}
+          ref={(component) => (this.Map_Ref = component)}
           source={{html: map}}
           geolocationEnabled={true}
         />
@@ -132,6 +210,30 @@ class HomeComponent extends Component {
               </View>
             </View>
           </View>
+          <TouchableOpacity
+            style={styles.geolocationIcon}
+            onPress={() => {
+              this.getCurLocation();
+              // console.log('mark');
+            }}>
+            <Image
+              style={styles.geolocationIconSize}
+              source={require('../../assets/locUser.png')}></Image>
+          </TouchableOpacity>
+          <Overlay
+            isVisible={this.state.showListParkingLot}
+            onBackdropPress={()=> this.toggleShowParkingLot()}>
+            <Text>Hello from Overlay!</Text>
+          </Overlay>
+
+          <TouchableOpacity
+            style={styles.viewParkingLot}
+            onPress={() => {
+              this.toggleShowParkingLot();
+              console.log(this.state.showListParkingLot);
+            }}>
+            <Text style={styles.showListButton}>P</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

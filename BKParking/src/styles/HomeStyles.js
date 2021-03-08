@@ -101,11 +101,36 @@ export default {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
-  overlay:{
+  overlay: {
     width: '100%',
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-}
+  },
+  geolocationIcon: {
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    right: 30,
+    top: '80%',
+  },
+  geolocationIconSize: {
+    width: 55,
+    height: 55,
+  },
+  viewParkingLot: {
+    position: 'absolute',
+    width: 150,
+    backgroundColor: '#5C5CF0',
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 45,
+    top: '85%',
+    right: '30%',
+  },
+  showListButton: {
+    fontSize: 18,
+    color: 'white',
+  },
 };

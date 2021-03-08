@@ -10,6 +10,7 @@ import UserProfileComponent from './src/components/UserProfileComponent';
 import AddPlateComponent from './src/components/AddPlateComponent';
 import MapContainer from './src/components/MapTesting';
 import MapTesting from './src/components/MapTesting';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 const Stack = createStackNavigator();
 
 class LoginScreen extends React.Component {
@@ -75,58 +76,56 @@ class MapScreen extends React.Component {
 export default class App extends React.Component {
   render() {
     return (
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="home">
-          <Stack.Screen
-            name="login"
-            component={LoginScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="signupuser"
-            component={SignupUserScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="addplate"
-            component={AddPlateScreen}
-            options={
-              {
-                // headerShown: false
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="home">
+            <Stack.Screen
+              name="login"
+              component={LoginScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="signupuser"
+              component={SignupUserScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="addplate"
+              component={AddPlateScreen}
+              options={
+                {
+                  // headerShown: false
+                }
               }
-            }
-          />
-          <Stack.Screen
-            name="signupinfo"
-            component={SignupInfoScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="home"
-            component={HomeScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="userprofile"
-            component={UserProfileScreen}
-            options={{}}
-          />
+            />
+            <Stack.Screen
+              name="signupinfo"
+              component={SignupInfoScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="home"
+              component={HomeScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="userprofile"
+              component={UserProfileScreen}
+              options={{}}
+            />
 
-          <Stack.Screen 
-            name="map" 
-            component={MapScreen} 
-            options={{}} 
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+            <Stack.Screen name="map" component={MapScreen} options={{}} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
     );
   }
 }
