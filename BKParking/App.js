@@ -8,9 +8,11 @@ import SignupInfoComponent from './src/components/SignupInfoComponent';
 import HomeComponent from './src/components/HomeComponent';
 import UserProfileComponent from './src/components/UserProfileComponent';
 import AddPlateComponent from './src/components/AddPlateComponent';
+import ParkingLotDetailComponent from './src/components/ParkingLotDetailComponent'
 import MapContainer from './src/components/MapTesting';
 import MapTesting from './src/components/MapTesting';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+
 const Stack = createStackNavigator();
 
 class LoginScreen extends React.Component {
@@ -23,6 +25,16 @@ class UserProfileScreen extends React.Component {
   render() {
     return (
       <UserProfileComponent
+        route={this.props.route}
+        navigation={this.props.navigation}
+      />
+    );
+  }
+}
+class ParkingLotDetailScreen extends React.Component {
+  render() {
+    return (
+      <ParkingLotDetailComponent
         route={this.props.route}
         navigation={this.props.navigation}
       />
@@ -78,7 +90,7 @@ export default class App extends React.Component {
     return (
       <SafeAreaProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="home">
+          <Stack.Navigator initialRouteName="parkingdetail">
             <Stack.Screen
               name="login"
               component={LoginScreen}
@@ -119,6 +131,11 @@ export default class App extends React.Component {
             <Stack.Screen
               name="userprofile"
               component={UserProfileScreen}
+              options={{}}
+            />
+            <Stack.Screen
+              name="parkingdetail"
+              component={ParkingLotDetailScreen}
               options={{}}
             />
 

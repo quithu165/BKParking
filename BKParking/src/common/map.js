@@ -34,7 +34,7 @@ const map=`<!DOCTYPE html>
 			.setContent("You clicked the map at " + e.latlng.toString())
 			.openOn(mymap);
 	}
-	mymap.on('click', onMapClick);
+	// mymap.on('click', onMapClick);
 
 
 
@@ -69,6 +69,10 @@ const map=`<!DOCTYPE html>
 			// L.marker([lat, long]).addTo(mymap);
         }
       }
+
+	  function showDetail(e){
+		alert(this.getLatLng());
+	  }
 	// markLocation(10.77057, 106.672547,1);
 </script>
 </body>

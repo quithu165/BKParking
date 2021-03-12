@@ -9,18 +9,29 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import WebView from 'react-native-webview';
 import map from '../common/map';
 import styles from '../styles/HomeStyles';
 import ModalDropdown from 'react-native-modal-dropdown';
-import {ListItem, Avatar } from 'react-native-paper';
+import {ListItem, Avatar} from 'react-native-paper';
 import {Overlay} from 'react-native-elements';
 const axios = require('axios');
 class HomeComponent extends Component {
   state = {
     showListParkingLot: false,
+    parkingLocation: {},
+    parkingList: [],
+    testImg: require('../../assets/locUser.png'),
+    parkingItem: {
+      title: '',
+      icon: '',
+      status: '',
+      distance: '',
+    },
   };
+
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     // markParkingLots(10.77057, 106.672547, 4);
@@ -141,15 +152,84 @@ class HomeComponent extends Component {
           var sizeOfResponse = JSON.stringify(response.data.resultArray.length);
           // console.log(JSON.stringify(response.data.resultArray));
           this.markParkingBaseLoc(response.data.resultArray, sizeOfResponse);
+          this.createOverlayList(response.data.resultArray, sizeOfResponse);
+          this.setState({
+            parkingLocation: JSON.stringify(response.data.resultArray),
+          });
+          // console.log(this.state.parkingLocation);
         },
         (error) => {
-          console.log('error');
-          Alert.alert('Wrong username or password!');
+          console.log(error.response);
+          // Alert.alert('Wrong username or password!');
         },
       );
   }
+  testServer() {
+    axios.get('http://gogito.duckdns.org:3002/users').then(
+      (response) => {
+        console.log(JSON.stringify(response.data));
+      },
+      (error) => {
+        console.log(error.response);
+      },
+    );
+  }
   toggleShowParkingLot() {
     this.setState({showListParkingLot: !this.state.showListParkingLot});
+  }
+  addParkingLotItem(item) {
+    this.setState({parkingList: [...this.state.parkingList, item]});
+  }
+  renderItem = ({item}) => (
+    <View style={styles.parkingLotItemWrapper}>
+      <TouchableOpacity 
+        style={styles.parkingLotItemNameWrapper}
+        onPress = {() => {
+            this.toggleShowParkingLot()
+            this.props.navigation.navigate('parkingdetail', this.state.item);
+        }}>
+        <View>
+          <Text>{item.name}</Text>
+        </View>
+      </TouchableOpacity>
+      <View style={styles.parkingLotItemStatusWrapper}>
+        <Text>{item.status}</Text>
+      </View>
+      <View style={styles.parkingLotItemIconWrapper}>
+        <Image style={styles.parkingLotItemIcon} source={item.icon}></Image>
+        <View style={styles.parkingLotItemDistance}>
+          <Text style={styles.parkingLotItemDistanceText}>{item.distance}</Text>
+        </View>
+      </View>
+    </View>
+  );
+  createOverlayList(data, size) {
+    this.setState({parkingList:[]});
+    for (var i = 0; i < size; i++) {
+      var parkingItem;
+      var iconRequire;
+      console.log(data[i].status);
+      switch (this.converStatus2Level(data[i].status)) {
+        case 'Full':
+          iconRequire = require('../../assets/emptySlots.png');
+          break;
+        case 'Normal':
+          iconRequire = require('../../assets/normalSlots.png');
+          break;
+        case 'Empty':
+          iconRequire = require('../../assets/fullSlots.png');
+          break;
+        default:
+          break;
+      }
+      parkingItem = {
+        ...data[i],
+        icon: iconRequire,
+        distance: '5km'
+      };
+      // console.log(parkingItem);
+      this.addParkingLotItem(parkingItem);
+    }
   }
   //RENDER=======================================================================
   render() {
@@ -214,23 +294,31 @@ class HomeComponent extends Component {
             style={styles.geolocationIcon}
             onPress={() => {
               this.getCurLocation();
-              // console.log('mark');
+              console.log('mark');
             }}>
             <Image
               style={styles.geolocationIconSize}
-              source={require('../../assets/locUser.png')}></Image>
+              source={this.state.testImg}></Image>
           </TouchableOpacity>
           <Overlay
+            fullScreen="true"
+            windowBackgroundColor="#EF2440"
+            overlayBackgroundColor="red"
+            overlayStyle={styles.showParkingDetailOverlay}
             isVisible={this.state.showListParkingLot}
-            onBackdropPress={()=> this.toggleShowParkingLot()}>
-            <Text>Hello from Overlay!</Text>
+            onBackdropPress={() => this.toggleShowParkingLot()}>
+            <Text style={styles.titleList}> PARKING LIST</Text>
+            <FlatList
+              data={this.state.parkingList}
+              renderItem={this.renderItem}
+              keyExtractor={(item) => item._id}
+            />
           </Overlay>
-
           <TouchableOpacity
             style={styles.viewParkingLot}
             onPress={() => {
               this.toggleShowParkingLot();
-              console.log(this.state.showListParkingLot);
+              // console.log(this.state.showListParkingLot);
             }}>
             <Text style={styles.showListButton}>P</Text>
           </TouchableOpacity>

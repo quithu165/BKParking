@@ -133,4 +133,63 @@ export default {
     fontSize: 18,
     color: 'white',
   },
+  showParkingDetailOverlay:{
+    width:"80%",
+    height: "80%",
+    backgroundColor: '#F9F0F1',
+    borderRadius: 25,
+    position: 'absolute',
+  },
+  titleList:{
+    fontSize: 20,
+    marginBottom: 15
+  },
+  parkingLotItemWrapper:{
+    height: 50,
+    flexDirection: "row",
+    flex: 1,
+    marginBottom: 10,
+    backgroundColor: "#F9E792",
+    borderRadius: 10,
+  },
+  parkingLotItemNameWrapper:{
+    flex: 8,
+    height: 50,
+    // 
+    marginRight: 10,
+    marginLeft: 5,
+    justifyContent:'center',
+    // alignItems: 'center'
+    
+  },
+  parkingLotItemStatusWrapper:{
+    flex: 2,
+    height: 50,
+    justifyContent:'center',
+    marginBottom: 10,
+    alignItems: 'center'
+  },
+  parkingLotNameStyle:{
+
+  },
+  parkingLotItemIconWrapper:{
+    flex: 2,
+    height: 50,
+    justifyContent:'center',
+    marginBottom: 10,
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  parkingLotItemIcon:{
+    flex: 3,
+    width: 25,
+    height: 25,
+  },
+  parkingLotItemDistance:{
+    flex: 2,
+    alignItems: 'center'
+  },
+  parkingLotItemDistanceText:{
+    fontSize: 10
+  }
 };
