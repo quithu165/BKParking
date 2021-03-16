@@ -32,6 +32,7 @@ class LoginComponent extends Component {
   login = (name, pass) => {
     //alert('email: ' + email + ' password: ' + pass)
     // this.props.navigation.navigate('map');
+    // console.log(this.props.route);
     if (name == '') Alert.alert('Username can be empty');
     else if (pass == '') Alert.alert('Password can be empty');
     else {
@@ -42,7 +43,7 @@ class LoginComponent extends Component {
         })
         .then(
           (response) => {
-            // console.log(JSON.stringify(response.data));
+            console.log(JSON.stringify(response.data));
             this.props.navigation.navigate('home', response.data);
           },
           (error) => {

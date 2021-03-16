@@ -30,13 +30,20 @@ class HomeComponent extends Component {
       status: '',
       distance: '',
     },
+    userOption: [],
+    userStatus: '',
+    checkingLogin: false
   };
 
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    this.getCurLocation();
+    console.log(this.props.route);
     // markParkingLots(10.77057, 106.672547, 4);
+    this.checkUserAuthentificate();
+    // console.log(this.state.userOption);
   }
-
+  
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -58,40 +65,86 @@ class HomeComponent extends Component {
     return true;
   }
   handleDropdownSelect(userOption) {
-    switch (userOption) {
-      case 0:
-        this.props.navigation.navigate('userprofile', this.props.route.params);
-        break;
+    console.log(userOption);
+    if (this.state.userStatus == '0') {
+      switch (userOption) {
+        case 0:
+          this.props.navigation.navigate('login');
+          break;
 
-      case 1:
-        console.log(this.props.route.params);
-        this.props.navigation.navigate('addplate', this.props.route.params._id);
-        break;
+        case 1:
+          this.props.navigation.navigate('signupuser');
+          break;
 
-      case 2:
-        Alert.alert(
-          'Logout',
-          'Do you want to logout?',
-          [
-            {
-              text: 'No',
-              onPress: () => console.log('Cancel Pressed'),
-              style: 'cancel',
-            },
-            {
-              text: 'Yes',
-              onPress: () => this.props.navigation.navigate('login'),
-            },
-          ],
-          {cancelable: false},
-        );
+        default:
+          console.log(userOption);
+      }
+    } else {
+      switch (userOption) {
+        case 0:
+          this.props.navigation.navigate(
+            'userprofile',
+            this.props.route.params,
+          );
+          break;
 
-        break;
-      case 3:
-        this.props.navigation.navigate('map');
-        break;
-      default:
-        console.log(userOption);
+        case 1:
+          console.log(this.props.route.params);
+          this.props.navigation.navigate(
+            'addplate',
+            this.props.route.params._id,
+          );
+          break;
+
+        case 2:
+          Alert.alert(
+            'Logout',
+            'Do you want to logout?',
+            [
+              {
+                text: 'No',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              {
+                text: 'Yes',
+                onPress: 
+                () => this.props.navigation.navigate('login', ''),
+              },
+            ],
+            {cancelable: false},
+          );
+
+          break;
+        case 3:
+          this.props.navigation.navigate('map');
+          break;
+        default:
+          console.log(userOption);
+      }
+    }
+  }
+  checkUserAuthentificate() {
+    console.log(this.props.route);
+    this.setState({
+      userOption: [],
+    });
+    this.setState({userStatus: ''});
+    if (this.props.route.params !== undefined) {
+      this.setState({
+        userOption: [
+          'User Infomation',
+          'Add license plate',
+          'Quit',
+          'Map Testing',
+        ],
+      });
+      this.setState({userStatus: '1'});
+      this.setState({checkingLogin: true});
+    } else {
+      this.setState({userStatus: 0});
+      this.setState({userOption: ['Login', 'Signup']});
+      this.setState({checkingLogin: false});
     }
   }
   markParkingLots(lat, long, type) {
@@ -182,18 +235,19 @@ class HomeComponent extends Component {
   }
   renderItem = ({item}) => (
     <View style={styles.parkingLotItemWrapper}>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.parkingLotItemNameWrapper}
-        onPress = {() => {
-            this.toggleShowParkingLot()
-            this.props.navigation.navigate('parkingdetail', this.state.item);
+        onPress={() => {
+          this.toggleShowParkingLot();
+          console.log(item);
+          this.props.navigation.navigate('parkingdetail', item);
         }}>
         <View>
           <Text>{item.name}</Text>
         </View>
       </TouchableOpacity>
       <View style={styles.parkingLotItemStatusWrapper}>
-        <Text>{item.status}</Text>
+        <Text>{Math.round(item.status * 100) + '%'}</Text>
       </View>
       <View style={styles.parkingLotItemIconWrapper}>
         <Image style={styles.parkingLotItemIcon} source={item.icon}></Image>
@@ -204,11 +258,11 @@ class HomeComponent extends Component {
     </View>
   );
   createOverlayList(data, size) {
-    this.setState({parkingList:[]});
+    this.setState({parkingList: []});
     for (var i = 0; i < size; i++) {
       var parkingItem;
       var iconRequire;
-      console.log(data[i].status);
+      // console.log(data[i].status);
       switch (this.converStatus2Level(data[i].status)) {
         case 'Full':
           iconRequire = require('../../assets/emptySlots.png');
@@ -225,9 +279,10 @@ class HomeComponent extends Component {
       parkingItem = {
         ...data[i],
         icon: iconRequire,
-        distance: '5km'
+        distance: '5km',
+        userID: (this.props.route.params.length != 0) ? this.props.route.params._id : ''
       };
-      // console.log(parkingItem);
+      console.log(this.state.parkingList);
       this.addParkingLotItem(parkingItem);
     }
   }
@@ -254,12 +309,8 @@ class HomeComponent extends Component {
                   onSelect={(userOption) =>
                     this.handleDropdownSelect(userOption)
                   }
-                  options={[
-                    'User Infomation',
-                    'Add license plate',
-                    'Quit',
-                    'Map Testing',
-                  ]}
+                  onDropdownWillShow={() => this.checkUserAuthentificate()}
+                  options={this.state.userOption}
                   renderRightComponent={() => (
                     <Image
                       style={styles.usericon}
@@ -293,7 +344,7 @@ class HomeComponent extends Component {
           <TouchableOpacity
             style={styles.geolocationIcon}
             onPress={() => {
-              this.getCurLocation();
+              
               console.log('mark');
             }}>
             <Image
@@ -314,14 +365,14 @@ class HomeComponent extends Component {
               keyExtractor={(item) => item._id}
             />
           </Overlay>
-          <TouchableOpacity
+        {this.state.checkingLogin &&  <TouchableOpacity
             style={styles.viewParkingLot}
             onPress={() => {
               this.toggleShowParkingLot();
               // console.log(this.state.showListParkingLot);
             }}>
             <Text style={styles.showListButton}>P</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </View>
       </View>
     );

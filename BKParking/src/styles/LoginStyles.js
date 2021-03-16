@@ -14,10 +14,10 @@ export default {
       },
       inputUsername: {
         width: '80%',
+        height: 50,
         backgroundColor: '#F9FBFC',
         borderRadius: 25,
         borderColor: '#0318FA',
-        height: 50,
         marginBottom: 20,
         justifyContent: 'center',
         position: 'absolute',

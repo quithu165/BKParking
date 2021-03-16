@@ -90,7 +90,7 @@ export default class App extends React.Component {
     return (
       <SafeAreaProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="parkingdetail">
+          <Stack.Navigator initialRouteName="home">
             <Stack.Screen
               name="login"
               component={LoginScreen}
